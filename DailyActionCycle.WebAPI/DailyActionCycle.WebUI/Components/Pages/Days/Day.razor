@@ -1,0 +1,74 @@
+﻿@page "/day/{date:datetime}";
+
+@namespace DailyActionCycle.WebUI.Components.Pages.Days
+@using DailyActionCycle.WebUI.Services
+
+@inject TaskService TaskService
+
+<MudPaper>
+
+    <MudText>@Date.ToShortDateString()</MudText>
+
+    <MudList>
+        @foreach (var task in Tasks)
+        {
+            <MudListItem>
+                <MudPaper Elevation="0" Class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex flex-column">
+                        
+                        @if (task.IsCompleted)
+                        {
+                            <s><MudText>@task.Name</MudText></s>
+                        }
+                        else
+                        {
+                            <MudTextField @bind-Value=@task.Name />
+                        }
+                        
+                        @if (task.HasNotification)
+                        {
+                            <MudText>@task.Date.TimeOfDay</MudText>
+                        }
+                        else
+                        {
+                            <MudTimePicker Time="task.Time.ToTimeSpan()"/>
+                        }
+                    </div>
+
+                    <MudCheckBox @bind-Checked=@task.IsCompleted />
+                    <MudIconButton OnClick="() => ToggleNotification(task)" Variant="Variant.Outlined" Color="Color.Primary" 
+                        Icon="@(task.HasNotification ? @Icons.Material.Outlined.NotificationsOff : @Icons.Material.Outlined.NotificationsActive)" />
+                </MudPaper>
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
+
+
+
+@code {
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    private List<TaskItem> Tasks { get; set; } 
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Tasks = TaskService.GetTasksForDate(Date);
+    }
+
+    private void ToggleNotification(TaskItem task)
+    {
+        if (task.HasNotification)
+        {
+            TaskService.UnsetNotification(task);
+        }
+        else
+        {
+            TaskService.SetNotification(task);
+        }
+
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/DailyActionCycle.WebAPI/DailyActionCycle.WebAPI/bin/
+/DailyActionCycle.WebAPI/.vs
+/DailyActionCycle.WebAPI/DailyActionCycle.WebUI/bin/
+/DailyActionCycle.WebAPI/DailyActionCycle.WebUI/obj
+/DailyActionCycle.WebAPI/DailyActionCycle.WebAPI/obj

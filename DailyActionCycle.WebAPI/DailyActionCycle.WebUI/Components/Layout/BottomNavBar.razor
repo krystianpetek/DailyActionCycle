@@ -1,0 +1,49 @@
+﻿@using DailyActionCycle.WebUI.Components.Pages
+@using MudBlazor
+
+@namespace DailyActionCycle.WebUI.Components.Layout
+@inject NavigationManager Navigation
+
+@ChildContent
+
+<MudTabs 
+    Elevation="1" Color="@Color.Dark" MinimumTabWidth="20" 
+    Centered=true Position="Position.Bottom"
+    Class="bottom-nav-container" ActivePanelIndexChanged=@OnItemClicked>
+    <MudTabPanel Text="Days" />
+    <MudTabPanel Text="Tasks"/>
+    <MudTabPanel Text="Habits" />
+    <MudTabPanel Text="Templates" />
+</MudTabs>
+
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private int _selectedIndex = 0;
+    private void OnItemClicked(int index)
+    {
+        _selectedIndex = index;
+        NavigateToSelectedPage();
+    }
+
+    private void NavigateToSelectedPage()
+    {
+        switch (_selectedIndex)
+        {
+            case 0:
+                Navigation.NavigateTo("/days");
+                break;
+            case 1:
+                Navigation.NavigateTo("/tasks");
+                break;
+            case 2:
+                Navigation.NavigateTo("/habits");
+                break;
+            case 3:
+                Navigation.NavigateTo("/templates");
+                break;
+        }
+    }
+}

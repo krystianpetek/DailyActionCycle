@@ -1,0 +1,98 @@
+﻿@inject INotificationService NotificationService
+
+
+@using DailyActionCycle.WebUI.Components.Layout
+@using DailyActionCycle.WebUI.Services
+@using System.Timers
+
+<PageTitle>Index</PageTitle>
+
+
+
+@* <MudContainer>
+    <MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
+    <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
+    <MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+
+
+    <MudTimePicker @bind-Time="selectedTime"/>
+
+    <MudButton OnClick="ScheduleNotification">Schedule Notification</MudButton>
+    <h1>Current Time: @currentTime.ToString("HH:mm:ss")</h1>
+</MudContainer> *@
+
+
+
+@* <MudTabs Position="Position.Bottom" TabPanelHeaderPosition="TabHeaderPosition.None" MinimumTabWidth="120px"
+         @bind-ActivePanelIndex="_index" Border="true" Centered=true Outlined="true" PanelClass="px-4 py-6" ApplyEffectsToContainer="true">
+    <ChildContent>
+        @foreach (var item in _tabs)
+        {
+            <MudTabPanel Text="@item.Name" Tag="@item.Id">@item.Content</MudTabPanel>
+        }
+    </ChildContent>
+</MudTabs>
+ *@
+
+@code {
+    private TimeSpan? selectedTime = DateTime.Now.AddSeconds(10).TimeOfDay;
+
+    private void OnTimeChanged(TimeSpan newTime)
+    {
+        selectedTime = newTime;
+    }
+
+    
+    private void ScheduleNotification()
+    {
+        // NotificationService.ShowNotification("Test Notification", "This is a test notification from Blazor.");
+
+        NotificationService.ScheduleNotification("Daily Reminder", "Don't forget your daily check!", selectedTime.Value);
+    }
+
+    private DateTime currentTime = DateTime.Now;
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+
+        timer = new Timer(1000); // Updates every second
+        timer.Elapsed += UpdateTime;
+        timer.AutoReset = true;
+        timer.Enabled = true;
+
+
+
+        _tabs.Add(new TabView { Content = "First tab content", Name = "Tab A", Id = Guid.NewGuid() });
+        _tabs.Add(new TabView { Content = "Second tab content", Name = "Tab B", Id = Guid.NewGuid() });
+        _tabs.Add(new TabView { Content = "Third tab content", Name = "Tab C", Id = Guid.NewGuid() });
+    }
+
+    private void UpdateTime(Object ssource, ElapsedEventArgs e)
+    {
+        currentTime = DateTime.Now;
+        InvokeAsync(StateHasChanged); // Re-renders the component on UI thread
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+
+
+
+    private class TabView
+    {
+        public String Name { get; set; }
+        public String Content { get; set; }
+        public Guid Id { get; set; }
+    }
+
+    private List<TabView> _tabs = new();
+    private int _index = 0;
+    private int? _nextIndex = null;
+
+}

@@ -1,0 +1,24 @@
+﻿.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 6px; /* Ustaw wysokość nawigacji */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff; /* Możesz dostosować kolor tła */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Dodaj cień, jeśli chcesz */
+}
+
+.bottom-nav .mud-tabs {
+    width: 100%;
+    height: 100%;
+}
+
+.bottom-nav .mud-tab-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
