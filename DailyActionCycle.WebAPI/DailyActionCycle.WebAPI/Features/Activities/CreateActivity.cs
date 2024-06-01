@@ -1,21 +1,21 @@
-﻿using DailyActionCycle.Core.Entities;
+﻿using DailyActionCycle.WebAPI.Entities;
 using DailyActionCycle.WebAPI.Database;
 using MediatR;
 
-namespace DailyActionCycle.WebAPI.Features.ToDos;
+namespace DailyActionCycle.WebAPI.Features.Activities;
 
-public static class CreateToDo
+public static class CreateActivity
 {
-    public class CreateToDoCommand : IRequest<Guid>
+    public class CreateActivityCommand : IRequest<Guid>
     {
         internal Guid Id { get; } = Guid.NewGuid();
 
-        public string Name { get; set; }
-        
+        public string Title { get; set; }
+
         public string Description { get; set; }
     }
 
-    internal sealed class Handler : IRequestHandler<CreateToDoCommand, Guid>
+    internal sealed class Handler : IRequestHandler<CreateActivityCommand, Guid>
     {
         private readonly DailyActionCycleDbContext _dbContext;
 
@@ -24,30 +24,30 @@ public static class CreateToDo
             _dbContext = dbContext;
         }
 
-        public async Task<Guid> Handle(CreateToDoCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateActivityCommand request, CancellationToken cancellationToken)
         {
-            var toDo = new ToDo
+            var activity = new Activity
             {
                 Id = request.Id,
-                Name = request.Name,
+                Title = request.Title,
                 Description = request.Description
             };
 
-            _dbContext.ToDos.Add(toDo);
+            _dbContext.Activities.Add(activity);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return toDo.Id;
+            return activity.Id;
         }
     }
 
     public static void MapEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("api/to-dos", async (CreateToDoCommand command, ISender sender) =>
+        app.MapPost("/activities", async (CreateActivityCommand command, ISender sender) =>
         {
             var toDoId = await sender.Send(command);
 
             return Results.Ok(toDoId);
-        });
+        }).WithTags("Activities");
     }
 }

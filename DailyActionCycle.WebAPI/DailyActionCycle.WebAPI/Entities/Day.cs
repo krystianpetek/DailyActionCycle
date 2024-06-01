@@ -1,8 +1,6 @@
-﻿using DailyActionCycle.Core.Entities.Abstracts;
+﻿namespace DailyActionCycle.WebAPI.Entities;
 
-namespace DailyActionCycle.Core.Entities;
-
-public class Day
+public sealed record class Day
 {
     public Day(DateOnly date)
     {
@@ -14,55 +12,32 @@ public class Day
 
     public DateOnly Date { get; init; }
 
+    public Guid? ActionTemplateId { get; set; }
     public ActionTemplate? ActionTemplate { get; set; }
 
-    public List<Entity> Tasks { get; set; } = [];
+    public List<Activity> Activities { get; set; } = [];
 
-    public List<Entity> Habits { get; set; } = [];
 
-    public IEnumerable<Entity> IncompletedActivities() => Tasks
-        .Union(Habits)
-        .Where(activity => !activity.Completed)
+    public IEnumerable<Activity> IncompletedActivities() => Activities
+        .Where(activity => !activity.IsCompleted)
         .AsEnumerable();
 
-    public IEnumerable<Entity> CompletedActivities() => Tasks
-        .Union(Habits)
-        .Where(activity => activity.Completed)
+    public IEnumerable<Activity> CompletedActivities() => Activities
+        .Where(activity => activity.IsCompleted)
         .AsEnumerable();
 
-    public void AddActivity(Entity activity)
+    public void AddActivity(Activity task)
     {
-        if (activity is ToDo task)
-        {
-            Tasks.Add(task);
-        }
-        else if (activity is Habit habit)
-        {
-            Habits.Add(habit);
-        }
+        Activities.Add(task);
     }
 
-    public void RemoveActivity(Entity activity)
+    public void RemoveActivity(Activity task)
     {
-        if (activity is ToDo task)
-        {
-            Tasks.Remove(task);
-        }
-        else if (activity is Habit habit)
-        {
-            Habits.Remove(habit);
-        }
+        Activities.Remove(task);
     }
 
-    public void CompleteActivity(Entity activity)
+    public void CompleteActivity(Activity task)
     {
-        if (activity is ToDo task)
-        {
-            Tasks.Find(t => t.Id == task.Id)?.Complete();
-        }
-        else if (activity is Habit habit)
-        {
-            Habits.Find(t => t.Id == habit.Id)?.Complete();
-        }
+        Activities.Find(t => t.Id == task.Id)?.Complete();
     }
 }

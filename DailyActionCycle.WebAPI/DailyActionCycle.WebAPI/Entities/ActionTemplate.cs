@@ -1,11 +1,9 @@
-﻿namespace DailyActionCycle.Core.Entities;
-public class ActionTemplate
+﻿namespace DailyActionCycle.WebAPI.Entities;
+public sealed record class ActionTemplate
 {
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public string Name { get; init; }
+    public string Name { get; set; }
 
-    public List<ToDo> Tasks { get; init; } = [];
-
-    public List<Habit> Habits { get; init; } = [];
+    public List<Activity> Activities { get; init; } = [];
 }

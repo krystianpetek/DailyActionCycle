@@ -1,21 +1,21 @@
-﻿using DailyActionCycle.Core.Entities;
-using DailyActionCycle.WebAPI.Database;
+﻿using DailyActionCycle.WebAPI.Database;
+using DailyActionCycle.WebAPI.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DailyActionCycle.WebAPI.Features.ActionTemplates;
 
-public static class AddToDoToActionTemplate
+public static class AddActivityToActionTemplate
 {
-    public class AddToDoToActionTemplateCommand : IRequest<ActionTemplate>
+    public class AddActivityToActionTemplateCommand : IRequest<ActionTemplate>
     {
         internal Guid ActionTemplateId { get; set; }
         
-        public Guid ToDoId { get; set; }
+        public Guid ActivityId { get; set; }
     }
 
-    internal sealed class Handler : IRequestHandler<AddToDoToActionTemplateCommand, ActionTemplate>
+    internal sealed class Handler : IRequestHandler<AddActivityToActionTemplateCommand, ActionTemplate>
     {
         private readonly DailyActionCycleDbContext _dbContext;
 
@@ -24,19 +24,19 @@ public static class AddToDoToActionTemplate
             _dbContext = dbContext;
         }
 
-        public async Task<ActionTemplate> Handle(AddToDoToActionTemplateCommand request, CancellationToken cancellationToken)
+        public async Task<ActionTemplate> Handle(AddActivityToActionTemplateCommand request, CancellationToken cancellationToken)
         {
             var actionTemplate = await _dbContext.ActionTemplates
-                .Include(actionTemplate => actionTemplate.Tasks)
+                .Include(actionTemplate => actionTemplate.Activities)
                 .FirstOrDefaultAsync(actionTemplate => actionTemplate.Id == request.ActionTemplateId, cancellationToken);
 
             if (actionTemplate is null)
                 throw new InvalidOperationException("Action template not found.");
 
-            var toDo = await _dbContext.ToDos.FirstOrDefaultAsync(todo => todo.Id == request.ToDoId, cancellationToken);
+            var activity = await _dbContext.Activities.FirstOrDefaultAsync(todo => todo.Id == request.ActivityId, cancellationToken);
 
-            if (toDo is not null && !actionTemplate.Tasks.Any(todo => todo.Id == request.ToDoId))
-                actionTemplate.Tasks.Add(toDo);
+            if (activity is not null && !actionTemplate.Activities.Any(activity => activity.Id == request.ActivityId))
+                actionTemplate.Activities.Add(activity);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -46,14 +46,14 @@ public static class AddToDoToActionTemplate
 
     public static void MapEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("api/action-templates/{id:guid}/to-dos", async ([FromRoute] Guid id, AddToDoToActionTemplateCommand command, ISender sender) =>
+        app.MapPost("/action-templates/{id:guid}/activities", async ([FromRoute] Guid id, AddActivityToActionTemplateCommand command, ISender sender) =>
         {
             command.ActionTemplateId = id;
 
             var toDoId = await sender.Send(command);
 
             return Results.Ok(toDoId);
-        });
+        }).WithTags("ActionTemplates");
     }
 
 }

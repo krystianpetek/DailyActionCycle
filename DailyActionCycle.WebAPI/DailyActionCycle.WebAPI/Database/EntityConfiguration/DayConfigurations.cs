@@ -1,4 +1,4 @@
-﻿using DailyActionCycle.Core.Entities;
+﻿using DailyActionCycle.WebAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,19 +8,19 @@ public class DayConfigurations : IEntityTypeConfiguration<Day>
 {
     public void Configure(EntityTypeBuilder<Day> builder)
     {
-        builder.HasKey(day => day.Date);
-        builder.Property(day => day.Date)
-            .HasConversion(
-                           date => date.ToString(),
-                                          date => DateOnly.Parse(date)
-                                                     );
+        builder.HasKey(prop => prop.Date);
 
-        builder.HasMany(day => day.Tasks)
+        builder.Property(prop => prop.Id)
+            .IsRequired();
+
+        builder.Property(prop => prop.Date)
+            .HasConversion(date => date.ToString(), date => DateOnly.Parse(date));
+
+        builder.HasMany(prop => prop.Activities)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(day => day.Habits)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(prop => prop.ActionTemplate)
+            .WithMany();
     }
 }

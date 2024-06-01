@@ -1,5 +1,5 @@
-﻿using DailyActionCycle.Core.Entities;
-using DailyActionCycle.WebAPI.Database;
+﻿using DailyActionCycle.WebAPI.Database;
+using DailyActionCycle.WebAPI.Entities;
 using MediatR;
 
 namespace DailyActionCycle.WebAPI.Features.Days;

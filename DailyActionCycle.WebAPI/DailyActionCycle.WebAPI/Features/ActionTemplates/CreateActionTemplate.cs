@@ -1,6 +1,5 @@
-﻿using Carter;
-using DailyActionCycle.Core.Entities;
-using DailyActionCycle.WebAPI.Database;
+﻿using DailyActionCycle.WebAPI.Database;
+using DailyActionCycle.WebAPI.Entities;
 using MediatR;
 
 namespace DailyActionCycle.WebAPI.Features.ActionTemplates;
@@ -29,8 +28,7 @@ public static class CreateActionTemplate
             {
                 Id = request.Id,
                 Name = request.Name,
-                Habits = [],
-                Tasks = []
+                Activities = []
             };
 
             _dbContext.ActionTemplates.Add(actionTemplate);
@@ -43,12 +41,12 @@ public static class CreateActionTemplate
 
     public static void MapEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("api/action-templates", async (CreateActionTemplateCommand command, ISender sender) =>
+        app.MapPost("/action-templates", async (CreateActionTemplateCommand command, ISender sender) =>
         {
             var actionTemplateId = await sender.Send(command);
 
             return Results.Ok(actionTemplateId);
-        });
+        }).WithTags("ActionTemplates");
     }
 
     //public class Endpoint : ICarterModule

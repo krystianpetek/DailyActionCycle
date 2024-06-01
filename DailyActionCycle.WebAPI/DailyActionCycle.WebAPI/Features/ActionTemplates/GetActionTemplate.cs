@@ -1,5 +1,5 @@
-﻿using DailyActionCycle.Core.Entities;
-using DailyActionCycle.WebAPI.Database;
+﻿using DailyActionCycle.WebAPI.Database;
+using DailyActionCycle.WebAPI.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,15 +25,14 @@ public static class GetActionTemplate
         public async Task<ActionTemplate?> Handle(GetActionTemplateQuery request, CancellationToken cancellationToken)
         {
             return await _dbContext.ActionTemplates
-                .Include(actionTemplate => actionTemplate.Tasks)
-                .Include(actionTemplate => actionTemplate.Habits)
+                .Include(actionTemplate => actionTemplate.Activities)
                 .FirstOrDefaultAsync(actionTemplate => actionTemplate.Id == request.Id, cancellationToken);
         }
     }
 
     public static void MapEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapGet("api/action-templates/{id:guid}", async ([FromRoute] Guid id, [FromServices] ISender sender) =>
+        app.MapGet("/action-templates/{id:guid}", async ([FromRoute] Guid id, [FromServices] ISender sender) =>
         {
             var query = new GetActionTemplateQuery { Id = id };
 
@@ -42,6 +41,6 @@ public static class GetActionTemplate
             return actionTemplate is not null
                 ? Results.Ok(actionTemplate)
                 : Results.NotFound();
-        });
+        }).WithTags("ActionTemplates");
     }
 }
