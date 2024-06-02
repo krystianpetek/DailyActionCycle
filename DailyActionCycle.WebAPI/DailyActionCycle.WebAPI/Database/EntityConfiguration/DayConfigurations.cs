@@ -17,8 +17,7 @@ public class DayConfigurations : IEntityTypeConfiguration<Day>
             .HasConversion(date => date.ToString(), date => DateOnly.Parse(date));
 
         builder.HasMany(prop => prop.Activities)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithMany();
 
         builder.HasOne(prop => prop.ActionTemplate)
             .WithMany();

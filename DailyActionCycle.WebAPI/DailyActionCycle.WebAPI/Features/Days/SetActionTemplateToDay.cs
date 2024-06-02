@@ -28,22 +28,32 @@ public static class SetActionTemplateToDay
         {
             var day = await _dbContext.Days
                 .Include(day => day.Activities)
-                .FirstOrDefaultAsync(day => day.Date.Day == request.Date.Day, cancellationToken);
+                .Include(day => day.ActionTemplate)
+                .FirstOrDefaultAsync(day => day.Date == request.Date, cancellationToken);
 
             var actionTemplate = await _dbContext.ActionTemplates
                 .Include(at => at.Activities)
                 .FirstOrDefaultAsync(at => at.Id == request.ActionTemplateId, cancellationToken);
 
+            if(day.ActionTemplate is not null)
+            {
+                foreach(var activity in day.ActionTemplate.Activities)
+                {
+                    day.RemoveActivity(activity);
+                }
+            }
+
             if (actionTemplate is not null)
             {
                 day.ActionTemplate = actionTemplate;
-                day.Activities.Clear();
                 day.Activities.AddRange(actionTemplate.Activities.Select(activity => activity));
             }
 
-            _dbContext.Days.Update(day);
+            var updatedEntity = _dbContext.Days.Update(day);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            updatedEntity.Entity.ActionTemplate = null;
 
             return day;
         }

@@ -53,6 +53,7 @@ public class Program
         var apiGroup = app.MapGroup("/api");
 
         CreateActivity.MapEndpoint(apiGroup);
+        ModifyActivity.MapEndpoint(apiGroup);
 
         CreateActionTemplate.MapEndpoint(apiGroup);
         GetActionTemplate.MapEndpoint(apiGroup);
@@ -61,6 +62,7 @@ public class Program
 
         GetDay.MapEndpoint(apiGroup);
         SetActionTemplateToDay.MapEndpoint(apiGroup);
+        AddActivityToDay.MapEndpoint(apiGroup);
 
         app.Urls.Add("https://0.0.0.0:7207/");
 

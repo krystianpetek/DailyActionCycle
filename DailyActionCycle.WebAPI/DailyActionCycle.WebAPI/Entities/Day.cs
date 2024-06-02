@@ -26,18 +26,18 @@ public sealed record class Day
         .Where(activity => activity.IsCompleted)
         .AsEnumerable();
 
-    public void AddActivity(Activity task)
+    public void AddActivity(Activity activity)
     {
-        Activities.Add(task);
+        Activities.Add(activity);
     }
 
-    public void RemoveActivity(Activity task)
+    public void RemoveActivity(Activity activity)
     {
-        Activities.Remove(task);
+        Activities.Remove(activity);
     }
 
-    public void CompleteActivity(Activity task)
+    public void CompleteActivity(Activity activity)
     {
-        Activities.Find(t => t.Id == task.Id)?.Complete();
+        Activities.Find(t => t.Id == activity.Id)?.Complete();
     }
 }

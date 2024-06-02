@@ -16,9 +16,6 @@ public class ActionTemplateConfiguratrions : IEntityTypeConfiguration<ActionTemp
         builder.Property(prop => prop.Name)
             .IsRequired();
 
-        builder.Property(prop => prop.Activities);
-
-        builder.HasOne(prop => prop.Activities)
-            .WithMany();
+        //builder.Property(prop => prop.Activities);
     }
 }
