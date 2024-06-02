@@ -2,8 +2,9 @@
 @page "/days";
 @namespace DailyActionCycle.WebUI.Components.Pages.Days
 
-@using DailyActionCycle.WebUI.Services
-@inject CurrentRouteService CurrentRouteService
+@using DailyActionCycle.WebUI.Services;
+@using MudBlazor;
+@inject CurrentRouteService CurrentRouteService;
 
 <MudSwipeArea OnSwipe="@HandleSwipe">
 
@@ -14,14 +15,16 @@
             {
                 var dayNumber = day.ToString("dd");
                 var isToday = day.Date == DateTime.Today.Date;
-
+                
                 <MudTabPanel Text="@($"{dayNumber}")"
                             BadgeData="@(isToday ? string.Empty : null)"
                             BadgeDot="@(isToday ? true : false)"
                             BadgeColor="@(isToday ? Color.Success : Color.Default)">
-                    <MudPaper Elevation="0">
-                        <Day Date="day" />                        
-                    </MudPaper>
+                    <MudSwipeArea OnSwipe="@HandleSwipeDay">
+                        <MudPaper Elevation="0">
+                            <Day Date="day" />
+                        </MudPaper>
+                    </MudSwipeArea>
                 </MudTabPanel>
             }
         </MudTabs>
@@ -43,7 +46,7 @@
         activeIndex = DaysOfWeek.IndexOf(DateTime.UtcNow.Date);
         CurrentRouteService.SetCurrentRoute(DateTime.UtcNow.ToLongDateString());
     }
-    
+
     private void IndexChanged(int i)
     {
         activeIndex = i;
@@ -52,17 +55,53 @@
 
     private async void HandleSwipe(SwipeDirection direction)
     {
+        if (direction == SwipeDirection.RightToLeft)
+            _startOfWeek = _startOfWeek.AddDays(7);
         
+        if (direction == SwipeDirection.LeftToRight)
+            _startOfWeek = _startOfWeek.AddDays(-7);
+
+        activeIndex = 0;
+        CurrentRouteService.SetCurrentRoute(DaysOfWeek[activeIndex].ToLongDateString());
+        StateHasChanged();
+    }
+
+    private async void HandleSwipeDay(SwipeDirection direction)
+    {
+        if (direction == SwipeDirection.RightToLeft)
+        {
+            if(activeIndex >= 0 && activeIndex < 6)
+                activeIndex++;
+            else
+                HandleSwipeWeek(direction);
+        }
+
+        if(direction == SwipeDirection.LeftToRight)
+        {
+            if (activeIndex > 0 && activeIndex <= 6)
+                activeIndex--;
+            else
+                HandleSwipeWeek(direction);
+        }
+
+        CurrentRouteService.SetCurrentRoute(DaysOfWeek[activeIndex].ToLongDateString());
+        StateHasChanged();
+    }
+
+    private async void HandleSwipeWeek(SwipeDirection direction)
+    {
         if (direction == SwipeDirection.RightToLeft)
         {
             _startOfWeek = _startOfWeek.AddDays(7);
-        }
-        else
-        {
-            _startOfWeek = _startOfWeek.AddDays(-7);
+            activeIndex = 0;
         }
         
-        activeIndex = 0;
+        if(direction == SwipeDirection.LeftToRight)
+        {
+            _startOfWeek = _startOfWeek.AddDays(-7);
+            activeIndex = 6;
+        }
+
         CurrentRouteService.SetCurrentRoute(DaysOfWeek[activeIndex].ToLongDateString());
         StateHasChanged();
     }

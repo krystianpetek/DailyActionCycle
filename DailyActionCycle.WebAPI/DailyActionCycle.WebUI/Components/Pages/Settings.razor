@@ -1,0 +1,27 @@
+﻿@page "/settings"
+@using DailyActionCycle.WebUI.Services
+
+@inject TaskService TaskService
+
+<PageTitle>Settings</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Settings</MudText>
+
+<MudTextField @bind-Value="newHttpClientUri"/>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="SaveSettings">Save</MudButton>
+
+@code {
+    private string newHttpClientUri = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        newHttpClientUri = TaskService.GetHttpClientUri();
+    }
+
+    private void SaveSettings()
+    {
+        TaskService.ChangeHttpClientUri(newHttpClientUri);
+    }
+}

@@ -11,8 +11,7 @@
     Centered=true Position="Position.Bottom"
     Class="bottom-nav-container" ActivePanelIndexChanged=@OnItemClicked>
     <MudTabPanel Text="Days" />
-    <MudTabPanel Text="Tasks"/>
-    <MudTabPanel Text="Habits" />
+    <MudTabPanel Text="Activities"/>
     <MudTabPanel Text="Templates" />
 </MudTabs>
 
@@ -36,13 +35,10 @@
                 Navigation.NavigateTo("/days");
                 break;
             case 1:
-                Navigation.NavigateTo("/tasks");
+                Navigation.NavigateTo("/activities");
                 break;
             case 2:
-                Navigation.NavigateTo("/habits");
-                break;
-            case 3:
-                Navigation.NavigateTo("/templates");
+                Navigation.NavigateTo("/action-templates");
                 break;
         }
     }
