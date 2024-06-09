@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:daily_action_cycle_mobile_ui/core/errors/exception.dart';
 import 'package:daily_action_cycle_mobile_ui/data/models/activity_model.dart';
 import 'package:daily_action_cycle_mobile_ui/core/config.dart';
@@ -21,12 +19,8 @@ class ActivityRemoteDataSourceImpl implements ActivityRemoteDataSource {
   @override
   Future<List<ActivityModel>> getActivities() async {
     try {
-      var httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => true);
-
       final response =
-          await client.get(Uri.parse('${Config.baseUrl}/activities'));
+          await http.get(Uri.parse('${Config.baseUrl}/activities'));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
