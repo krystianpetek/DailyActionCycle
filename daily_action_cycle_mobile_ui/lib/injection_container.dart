@@ -1,4 +1,6 @@
+import 'package:daily_action_cycle_mobile_ui/core/features/activities/add_activity.dart';
 import 'package:daily_action_cycle_mobile_ui/core/features/activities/get_activities.dart';
+import 'package:daily_action_cycle_mobile_ui/core/features/activities/update_activity.dart';
 import 'package:daily_action_cycle_mobile_ui/core/repositories/activity_repository.dart';
 import 'package:daily_action_cycle_mobile_ui/data/data_sources/activity_local_data_source.dart';
 import 'package:daily_action_cycle_mobile_ui/data/data_sources/activity_remote_data_source.dart';
@@ -12,10 +14,13 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // BLoC
-  sl.registerFactory(() => ActivityBloc(getActivities: sl()));
+  sl.registerFactory(() => ActivityBloc(
+      getActivities: sl(), addActivity: sl(), updateActivity: sl())); // Rejestracja zależności
 
   // Use cases
   sl.registerLazySingleton(() => GetActivities(sl()));
+  sl.registerLazySingleton(() => AddActivity(sl()));
+  sl.registerLazySingleton(() => UpdateActivity(sl()));
 
   // Repository
   sl.registerLazySingleton<ActivityRepository>(
@@ -27,7 +32,7 @@ Future<void> init() async {
 
   // Data sources
   sl.registerLazySingleton<ActivityRemoteDataSource>(
-    () => ActivityRemoteDataSourceImpl(client: sl()),
+    () => ActivityRemoteDataSourceImpl(),
   );
 
   sl.registerLazySingleton<ActivityLocalDataSource>(

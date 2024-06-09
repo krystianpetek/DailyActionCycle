@@ -1,5 +1,6 @@
 part of 'activity_bloc.dart';
 
+@immutable
 abstract class ActivityState extends Equatable {
   const ActivityState();
 

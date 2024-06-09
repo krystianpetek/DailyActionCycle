@@ -7,27 +7,31 @@ import 'package:daily_action_cycle_mobile_ui/core/repositories/activity_reposito
 import 'package:daily_action_cycle_mobile_ui/data/data_sources/activity_local_data_source.dart';
 import 'package:daily_action_cycle_mobile_ui/data/data_sources/activity_remote_data_source.dart';
 import 'package:daily_action_cycle_mobile_ui/data/models/activity_model.dart';
+import 'package:daily_action_cycle_mobile_ui/data/models/add_activity_model.dart';
 import 'package:dartz/dartz.dart';
 
 class ActivityRepositoryImpl implements ActivityRepository {
   final ActivityRemoteDataSource remoteDataSource;
   final ActivityLocalDataSource localDataSource;
 
-  ActivityRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
+  ActivityRepositoryImpl(
+      {required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, List<Activity>>> getActivities() async {
     try {
-      final remoteActivities = await remoteDataSource.getActivities();
-      localDataSource.cacheActivities(remoteActivities);
-      return Right(remoteActivities);
+      // final remoteActivities = await remoteDataSource.getActivities();
+      // localDataSource.cacheActivities(remoteActivities);
+      // return Right(remoteActivities);
+      final localActivities = await localDataSource.getCachedActivities();
+      return Right(localActivities);
     } on ServerException catch (e) {
       print('ServerException in getActivities: $e');
       try {
         final localActivities = await localDataSource.getCachedActivities();
         return Right(localActivities);
       } on CacheException catch (e) {
-       print('CacheException in getActivities: $e');
+        print('CacheException in getActivities: $e');
         return Left(CacheFailure('Failed to fetch data from cache'));
       }
     } catch (e) {
@@ -37,28 +41,31 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addActivity(Activity activity) async {
+  Future<Either<Failure, void>> addActivity(AddActivityModel activity) async {
     try {
-      final activityModel = ActivityModel(
-        id: activity.id,
+      // await remoteDataSource.addActivity(activity);
+      // return Right(null);
+      final activities = await localDataSource.getCachedActivities();
+      activities.add(ActivityModel(
+        id: "",
         title: activity.title,
         description: activity.description,
-        createdAt: activity.createdAt,
-        dueDate: activity.dueDate,
-        isCompleted: activity.isCompleted,
-        isNotified: activity.isNotified,
-        updatedAt: activity.updatedAt,
-        isDeleted: activity.isDeleted,
-        deletedAt: activity.deletedAt,
-      );
+        createdAt: DateTime.now(),
+        dueDate: DateTime.now(),
+        isCompleted: false,
+        isNotified: false,
+        updatedAt: null,
+        isDeleted: false,
+        deletedAt: null,
+      ));
 
-      await remoteDataSource.addActivity(activityModel);
+      await localDataSource.cacheActivities(activities);
       return Right(null);
     } on ServerException catch (e) {
       print('ServerException in addActivity: $e');
       return Left(ServerFailure('Failed to add activity'));
     } catch (e) {
-     print('Unexpected exception in addActivity: $e');
+      print('Unexpected exception in addActivity: $e');
       return Left(ServerFailure('Failed to add activity'));
     }
   }
@@ -79,7 +86,18 @@ class ActivityRepositoryImpl implements ActivityRepository {
         deletedAt: activity.deletedAt,
       );
 
-      await remoteDataSource.updateActivity(activityModel);
+      final activities = await localDataSource.getCachedActivities();
+
+      activities.removeWhere((a) => a.id == activityModel.id);
+
+      activities.add(activityModel);
+
+      // update it
+
+      await localDataSource.cacheActivities(activities);
+
+      // await remoteDataSource.updateActivity(activityModel);
+
       return Right(null);
     } on ServerException catch (e) {
       print('ServerException in updateActivity: $e');

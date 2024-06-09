@@ -38,4 +38,19 @@ class Activity extends Equatable {
         isDeleted,
         deletedAt
       ];
+
+  Activity copyWith({required bool isCompleted}) {
+    return Activity(
+      id: id,
+      title: title,
+      description: description,
+      createdAt: createdAt,
+      dueDate: dueDate,
+      isCompleted: isCompleted,
+      isNotified: isNotified,
+      updatedAt: updatedAt,
+      isDeleted: isDeleted,
+      deletedAt: deletedAt,
+    );
+  }
 }
