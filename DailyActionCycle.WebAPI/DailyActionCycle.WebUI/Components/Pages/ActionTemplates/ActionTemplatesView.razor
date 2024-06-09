@@ -1,0 +1,67 @@
+﻿@page "/action-templates";
+@namespace DailyActionCycle.WebUI.Components.Pages.ActionTemplates
+@using DailyActionCycle.WebUI.Services
+
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+@inject ActionTemplateService ActionTemplateService;
+
+<MudPaper Class="pa-2">
+    <MudPaper>
+        <MudList Clickable=true Dense=true>
+            <MudListSubheader>
+                Templates
+            </MudListSubheader>
+            @foreach (var item in ActionTemplates)
+            {
+                <MudListItem OnClick="@(() => OpenDialog(item))">
+                    <MudElement Class="d-flex flex-row justify-content-between align-items-center">
+                        <MudText Typo="Typo.body1">@item.Name</MudText>
+                        <MudSpacer/>
+                        <MudText Typo="Typo.body2">@item.Activities.Count</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveItem(item)" />
+                    </MudElement>
+                </MudListItem>
+            }
+        </MudList>
+    </MudPaper>
+    <MudElement Class="d-flex justify-content-between align-items-center">
+        <MudTextField @bind-Value="newItem.Name" Label="Name" Required="true" Variant="Variant.Outlined"
+                      AdornmentIcon="@Icons.Material.Filled.Add" OnAdornmentClick="AddItem" Adornment="Adornment.End" />
+    </MudElement>
+</MudPaper>
+
+@code {
+    private List<ActionTemplate> ActionTemplates = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ActionTemplates = await ActionTemplateService.GetActionTemplates();
+    }
+
+    private ActionTemplate? newItem = new("");
+
+    private void OpenDialog(ActionTemplate actionTemplate)
+    {
+        // var parameters = new DialogParameters<AddDialog> { { x => x.ActionTemplate, actionTemplate } };
+
+        // DialogService.Show<AddDialog>($"Edit {actionTemplate.Name}", parameters);
+
+        NavigationManager.NavigateTo($"/action-templates/{actionTemplate.Id}");
+    }
+
+    private void AddItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newItem?.Name))
+        {
+            newItem.Position = ActionTemplates.Count + 1; // Assuming Id is just an incrementing integer
+            ActionTemplates.Add(newItem);
+            newItem = new ActionTemplate(""); // Reset the newItem
+        }
+    }
+
+    private void RemoveItem(ActionTemplate item)
+    {
+        ActionTemplates.Remove(item);
+    }
+}

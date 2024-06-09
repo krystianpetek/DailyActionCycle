@@ -1,0 +1,28 @@
+﻿@using DailyActionCycle.WebUI.Services
+<MudDialog>
+    <DialogContent>
+        <MudPaper>
+            <MudList>
+                @foreach(var item in ActionTemplate?.Activities)
+                {
+                    <MudListItem>
+                        <MudText>@item.Title</MudText>
+                    </MudListItem>                    
+                }
+            </MudList>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public ActionTemplate? ActionTemplate { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

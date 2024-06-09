@@ -5,6 +5,7 @@ using Android.Media;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
+using DailyActionCycle.WebUI.Platforms.Android;
 
 namespace DailyActionCycle.WebUI.Services;
 

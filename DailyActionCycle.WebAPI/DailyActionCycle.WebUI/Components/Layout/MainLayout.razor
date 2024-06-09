@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject CurrentRouteService CurrentRouteService
 
-<MudThemeProvider />
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -23,6 +23,7 @@
             <MudText Typo="Typo.h6">MyApplication</MudText>
         </MudDrawerHeader>
         <NavMenu />
+        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
     </MudDrawer>
 
     <MudSwipeArea OnSwipe="@OnSwipe">
@@ -43,6 +44,9 @@
     bool _drawerOpen = true;
 
     string title = "DailyActionCycle";
+
+    private MudTheme _theme = new();
+    private bool _isDarkMode = true;
 
     public void OnSwipe(SwipeDirection direction)
     {

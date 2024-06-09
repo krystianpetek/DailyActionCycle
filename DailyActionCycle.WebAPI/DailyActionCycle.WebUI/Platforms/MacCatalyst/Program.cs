@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace DailyActionCycle.WebUI;
+namespace DailyActionCycle.WebUI.Platforms.MacCatalyst;
 public class Program
 {
     // This is the main entry point of the application.

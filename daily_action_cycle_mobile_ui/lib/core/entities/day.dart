@@ -1,13 +1,23 @@
-import 'package:daily_action_cycle_mobile_ui/core/entities/action_template.dart';
-import 'package:daily_action_cycle_mobile_ui/core/entities/habit.dart';
-import 'package:daily_action_cycle_mobile_ui/core/entities/todo.dart';
+import 'package:equatable/equatable.dart';
+import 'activity.dart';
+import 'action_template.dart';
 
-class Day {
-  String? id;
-  DateTime? dueDate;
+class Day extends Equatable {
+  final String id;
+  final DateTime date;
+  final String actionTemplateId;
+  final ActionTemplate? actionTemplate;
+  final List<Activity> tasks;
 
-  List<ToDo> tasks = [];
-  List<Habit> habits = [];
+  Day({
+    required this.id,
+    required this.date,
+    required this.actionTemplateId,
+    this.actionTemplate,
+    required this.tasks,
+  });
 
-  ActionTemplate? actionTemplate;
+  @override
+  List<Object?> get props =>
+      [id, date, actionTemplateId, actionTemplate, tasks];
 }

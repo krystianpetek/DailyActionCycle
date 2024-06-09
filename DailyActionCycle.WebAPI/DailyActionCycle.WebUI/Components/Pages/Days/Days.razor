@@ -10,7 +10,7 @@
 
     <MudPaper>
     
-        <MudTabs MinimumTabWidth="20px" Color="Color.Primary" Centered=true ActivePanelIndexChanged="IndexChanged" ActivePanelIndex="activeIndex">
+        <MudTabs MinimumTabWidth="20px" Centered=true ActivePanelIndexChanged="IndexChanged" ActivePanelIndex="activeIndex">
             @foreach (var day in DaysOfWeek)
             {
                 var dayNumber = day.ToString("dd");
@@ -19,7 +19,7 @@
                 <MudTabPanel Text="@($"{dayNumber}")"
                             BadgeData="@(isToday ? string.Empty : null)"
                             BadgeDot="@(isToday ? true : false)"
-                            BadgeColor="@(isToday ? Color.Success : Color.Default)">
+                            BadgeColor="@(isToday ? Color.Primary : Color.Default)">
                     <MudSwipeArea OnSwipe="@HandleSwipeDay">
                         <MudPaper Elevation="0">
                             <Day Date="day" />
@@ -28,6 +28,7 @@
                 </MudTabPanel>
             }
         </MudTabs>
+        <MudDivider Vertical=true Light=false />
 
     </MudPaper>
 

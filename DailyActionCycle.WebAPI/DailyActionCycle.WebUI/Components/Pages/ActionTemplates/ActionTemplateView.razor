@@ -1,0 +1,52 @@
+﻿@page "/action-templates/{id:guid}";
+@using DailyActionCycle.WebUI.Services
+
+@inject NavigationManager NavigationManager;
+@inject ActionTemplateService ActionTemplateService;
+
+<MudPaper>
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => NavigationManager.NavigateTo("/action-templates"))" />
+        <MudText Typo="Typo.body1">@actionTemplate?.Name</MudText>
+        <MudList>
+        @if(actionTemplate?.Activities.Count < 1)
+        {
+            <MudText>There are no activities</MudText>    
+        }
+        else
+        {
+        
+            foreach(var activity in actionTemplate?.Activities)
+            {
+                <MudListItem>
+                    @activity?.Title
+                </MudListItem>
+            }
+        }
+        </MudList>
+
+        <MudButton OnClick="@AddActivity">add</MudButton>
+</MudPaper>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private ActionTemplate? actionTemplate { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        actionTemplate = await ActionTemplateService.GetActionTemplate(Id);
+    }
+
+    public async Task AddActivity()
+    {
+        actionTemplate?.Activities.Add(new Activity()
+        {
+            Description = "activity",
+            Title = "activity"
+        });
+
+        await ActionTemplateService.UpdateActionTemplate(actionTemplate);
+
+        StateHasChanged();
+    }
+}

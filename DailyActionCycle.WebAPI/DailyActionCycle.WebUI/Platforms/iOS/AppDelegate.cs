@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace DailyActionCycle.WebUI;
+namespace DailyActionCycle.WebUI.Platforms.iOS;
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
 {

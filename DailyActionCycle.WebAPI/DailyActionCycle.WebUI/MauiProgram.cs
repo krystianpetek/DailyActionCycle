@@ -18,10 +18,16 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddMudServices();
         builder.Services.AddSingleton<TaskService>();
+        
+        //string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        //string databasePath = Path.Combine(folderPath, "DailyActionCycle.db");
+        //builder.Services.AddDbContext<DailyActionCycleDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
+        //builder.Services.AddDbContextFactory<DailyActionCycleDbContext>(options => options.UseSqlite("Data Source=Database\\dailyactioncycle.db"));
+
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
         return builder.Build();

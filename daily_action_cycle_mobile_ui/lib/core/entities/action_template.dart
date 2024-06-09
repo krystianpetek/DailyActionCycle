@@ -1,7 +1,17 @@
-import 'package:daily_action_cycle_mobile_ui/core/entities/habit.dart';
-import 'package:daily_action_cycle_mobile_ui/core/entities/todo.dart';
+import 'package:equatable/equatable.dart';
+import 'activity.dart';
 
-class ActionTemplate {
-  List<ToDo> tasks = [];
-  List<Habit> habits = [];
+class ActionTemplate extends Equatable {
+  final String id;
+  final String name;
+  final List<Activity> tasks;
+
+  ActionTemplate({
+    required this.id,
+    required this.name,
+    required this.tasks,
+  });
+
+  @override
+  List<Object?> get props => [id, name, tasks];
 }

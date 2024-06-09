@@ -1,7 +1,8 @@
 ﻿namespace DailyActionCycle.WebUI.Services;
 
-public interface ICurrentRouteService {
-    
+public interface ICurrentRouteService
+{
+
     string CurrentRoute { get; }
     public void SetCurrentRoute(string currentRoute);
 }

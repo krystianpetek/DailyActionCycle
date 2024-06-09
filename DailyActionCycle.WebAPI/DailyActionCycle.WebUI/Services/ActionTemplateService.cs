@@ -1,128 +1,56 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-
-namespace DailyActionCycle.WebUI.Services;
+﻿namespace DailyActionCycle.WebUI.Services;
 
 public class ActionTemplateService
 {
-    private readonly HttpClient _httpClient;
-    private Dictionary<DateOnly, List<TaskItem>> _tasksByDate = new Dictionary<DateOnly, List<TaskItem>>();
+    private readonly List<ActionTemplate> actionTemplates = [];
 
-    public ActionTemplateService(HttpClient httpClient)
+    public Task<ActionTemplate?> GetActionTemplate(Guid id)
     {
-        _httpClient = httpClient;
+        return Task.FromResult(actionTemplates.Find(x => x.Id == id));
     }
 
-    public async Task<List<TaskItem>> GetTasksForDate(DateTime date)
+    public Task<List<ActionTemplate>> GetActionTemplates()
     {
-        var dateOnly = DateOnly.FromDateTime(date);
-
-        if (_tasksByDate.ContainsKey(dateOnly))
-        {
-            return _tasksByDate[dateOnly];
-        }
-
-        try
-        {
-            var response = await _httpClient.GetAsync($"/api/days/{date:yyyy-MM-dd}");
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var day = JsonSerializer.Deserialize<Day>(content, options);
-
-                var taskList = day.Activities.Select(a => new TaskItem
-                {
-                    Date = day.Date,
-                    Id = a.Id,
-                    Name = a.Title,
-                    Time = TimeOnly.FromDateTime(a.DueDate),
-                    IsCompleted = a.IsCompleted,
-                    HasNotification = a.IsNotified
-                }).ToList();
-
-                _tasksByDate[dateOnly] = taskList;
-                return taskList;
-            }
-
-        }
-        catch (Exception ex)
-        {
-            await Console.Out.WriteLineAsync(ex.Message);
-        }
-        return new List<TaskItem>();
-    }
-    public async Task AddTask(TaskItem task)
-    {
-        var dateOnly = task.Date;
-
-        try
-        {
-            var response = await _httpClient.PostAsJsonAsync("api/tasks", task);
-            if (response.IsSuccessStatusCode)
-            {
-                var createdTask = await response.Content.ReadFromJsonAsync<TaskItem>();
-
-                if (createdTask != null)
-                {
-                    if (_tasksByDate.ContainsKey(task.Date))
-                    {
-                        _tasksByDate[dateOnly].Add(createdTask);
-                    }
-                    else
-                    {
-                        _tasksByDate[dateOnly] = new List<TaskItem> { createdTask };
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("Failed to add the task. Server returned an error.");
-            }
-        }
-        catch (HttpRequestException)
-        {
-            Console.WriteLine("Failed to add the task. Please check your internet connection.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+        return Task.FromResult(actionTemplates);
     }
 
-    public async Task UpdateTask(TaskItem task)
+    public Task<ActionTemplate> AddActionTemplate(string name) 
     {
-        var dateOnly = task.Date;
-
-        var response = await _httpClient.PutAsJsonAsync($"api/tasks/{task.Id}", task);
-        if (response.IsSuccessStatusCode)
+        var actionTemplate = new ActionTemplate(name)
         {
-            var updatedTask = await response.Content.ReadFromJsonAsync<TaskItem>();
-            if (updatedTask != null)
-            {
-                if (_tasksByDate.ContainsKey(dateOnly))
-                {
-                    var index = _tasksByDate[dateOnly].FindIndex(t => t.Id == updatedTask.Id);
-                    if (index != -1)
-                    {
-                        _tasksByDate[dateOnly][index] = updatedTask;
-                    }
-                }
-            }
-        }
+            Position = actionTemplates.Count + 1
+        };
+
+        actionTemplates.Add(actionTemplate);
+        
+        return Task.FromResult(actionTemplate);
+    }
+
+    public Task<ActionTemplate> UpdateActionTemplate(ActionTemplate actionTemplate)
+    {
+        //var template = actionTemplates.Find(a => a.Id == actionTemplate.Id);
+
+        //if (template is not null) { 
+        //    //template.Position = actionTemplate.Position;
+        //    //template.Name = actionTemplate.Name;
+            
+        //    //template.Activities.Clear();
+        //    //template.Activities.AddRange(actionTemplate.Activities);
+
+        //    return Task.FromResult(template);
+        //}
+
+        return Task.FromResult(actionTemplate);
     }
 }
 
-public sealed record class ActionTemplate
+public sealed record class ActionTemplate(string Name)
 {
+    public int Position { get; set; }
+
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public string Name { get; set; }
+    public string Name { get; set; } = Name;
 
     public List<Activity> Activities { get; init; } = [];
 }

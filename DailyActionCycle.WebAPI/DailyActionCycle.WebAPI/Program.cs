@@ -54,6 +54,7 @@ public class Program
 
         CreateActivity.MapEndpoint(apiGroup);
         ModifyActivity.MapEndpoint(apiGroup);
+        GetActivities.MapEndpoint(apiGroup);
 
         CreateActionTemplate.MapEndpoint(apiGroup);
         GetActionTemplate.MapEndpoint(apiGroup);

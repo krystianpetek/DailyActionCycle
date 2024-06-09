@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DailyActionCycle.WebUI.Services;
 
@@ -48,8 +47,8 @@ public class TaskService
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                
-                
+
+
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -71,7 +70,8 @@ public class TaskService
             }
 
         }
-        catch ( Exception ex ) {
+        catch (Exception ex)
+        {
             await Console.Out.WriteLineAsync(ex.Message);
         }
 
@@ -82,7 +82,8 @@ public class TaskService
     {
         var dateOnly = task.Date;
 
-        try {         
+        try
+        {
             var response = await _httpClient.PostAsJsonAsync("api/tasks", task);
             if (response.IsSuccessStatusCode)
             {

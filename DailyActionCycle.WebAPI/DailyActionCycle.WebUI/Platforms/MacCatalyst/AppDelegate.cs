@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace DailyActionCycle.WebUI;
+namespace DailyActionCycle.WebUI.Platforms.MacCatalyst;
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
 {

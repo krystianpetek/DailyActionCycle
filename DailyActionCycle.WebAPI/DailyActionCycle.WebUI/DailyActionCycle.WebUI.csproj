@@ -44,7 +44,6 @@
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
         <!-- Images -->
         <MauiImage Include="Resources\Images\*" />
@@ -58,6 +57,45 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AndroidResource Remove="Database\**" />
+      <AndroidResource Remove="Entities\**" />
+      <AndroidResource Remove="Features\**" />
+      <Compile Remove="Database\**" />
+      <Compile Remove="Entities\**" />
+      <Compile Remove="Features\**" />
+      <Content Remove="Database\**" />
+      <Content Remove="Entities\**" />
+      <Content Remove="Features\**" />
+      <EmbeddedResource Remove="Database\**" />
+      <EmbeddedResource Remove="Entities\**" />
+      <EmbeddedResource Remove="Features\**" />
+      <MauiXaml Remove="Database\**" />
+      <MauiXaml Remove="Entities\**" />
+      <MauiXaml Remove="Features\**" />
+      <None Remove="Database\**" />
+      <None Remove="Entities\**" />
+      <None Remove="Features\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Splash\splash.webp" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiSplashScreen Include="Resources\Splash\splash.webp" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />

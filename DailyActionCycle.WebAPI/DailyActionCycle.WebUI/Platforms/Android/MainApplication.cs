@@ -4,11 +4,11 @@ using DailyActionCycle.WebUI.Services;
 using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
-namespace DailyActionCycle.WebUI;
+namespace DailyActionCycle.WebUI.Platforms.Android;
 [Application]
 public class MainApplication : MauiApplication
 {
-    public MainApplication(IntPtr handle, JniHandleOwnership ownership)
+    public MainApplication(nint handle, JniHandleOwnership ownership)
         : base(handle, ownership)
     {
     }
@@ -35,12 +35,26 @@ public class MainApplication : MauiApplication
 
         builder.Services.AddHttpClient("TaskService").ConfigurePrimaryHttpMessageHandler(mh => httpClientHandler);
         builder.Services.AddSingleton<TaskService>();
+        builder.Services.AddSingleton<ActionTemplateService>();
+
+        //string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        //string databasePath = Path.Combine(folderPath, "DailyActionCycle.db");
+        //builder.Services.AddDbContext<DailyActionCycleDbContext>(options =>
+        //{
+        //    string dbPath = Path.Combine(FileSystem.AppDataDirectory, "yourdatabase.db");
+        //    options.UseSqlite($"Filename={dbPath}");
+        //});
+
+        builder.Services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssembly(typeof(MainApplication).Assembly);
+        });
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
-            builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
+}
